@@ -14,7 +14,10 @@ app.use(express.json());
 const TVShowsRouter = require("./resources/tvshows/tvshows.router");
 app.use("/tvshows", TVShowsRouter);
 
-//todo add episodes router
+const EpisodesRouter = require("./resources/episodes/episodes.router");
+app.use("/episodes", EpisodesRouter);
+
+//todo connect shows with episodes
 
 const startServer = async () => {
   await db.connect();

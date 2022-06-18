@@ -45,7 +45,7 @@ const deleteOne = async (req, res) => {
     res.status(200).json({ results: [doc] });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ error: "Could not delete TV Show" });
+    res.status(500).json({ error: "Could not delete the TV Show" });
   }
 };
 
@@ -57,8 +57,3 @@ module.exports = {
 };
 
 //doing manage all possible errors
-
-//done GET all TV Shows
-//done GET a TV Show (id_show)
-//done POST a TV Show
-//done DELETE a TV Show (id_show)
