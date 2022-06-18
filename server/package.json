@@ -1,0 +1,24 @@
+{
+  "name": "TVShows-tracker-db-server",
+  "version": "0.1.0",
+  "description": "TVShows Tracker API server with MongoDB",
+  "main": "./src/server.js",
+  "scripts": {
+    "dev": "nodemon ."
+  },
+  "keywords": [
+    "api",
+    "mongo"
+  ],
+  "author": "Alba Talaya Vidal <talayaalba@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "mongoose": "^6.4.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
