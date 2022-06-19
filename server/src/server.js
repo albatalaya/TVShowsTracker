@@ -15,9 +15,7 @@ const TVShowsRouter = require("./resources/tvshows/tvshows.router");
 app.use("/tvshows", TVShowsRouter);
 
 const EpisodesRouter = require("./resources/episodes/episodes.router");
-app.use("/episodes", EpisodesRouter);
-
-//todo connect shows with episodes
+app.use("/tvshows", EpisodesRouter);
 
 const startServer = async () => {
   await db.connect();
@@ -27,22 +25,3 @@ const startServer = async () => {
 };
 
 startServer();
-
-/*
-DATABASE MODEL  
-
-TV Show: id_show, show_name
-Episode: id_episode, episode_name, season_number, episode_number, watched_status, id_show
-
-ENDPOINTS
-
-GET all TV Shows
-GET a TV Show (id_show)
-POST a TV Show
-DELETE a TV Show (id_show)
-
-GET an episode (id_show id_episode)
-POST an episode (id_show)
-PUT update an episode watched_status (id_show id_episode)
-DELETE an episode (id_show id_episode)
-*/

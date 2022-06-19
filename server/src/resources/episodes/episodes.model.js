@@ -27,5 +27,3 @@ const EpisodeSchema = new Schema(
 const Episode = mongoose.model("Episode", EpisodeSchema);
 
 module.exports = Episode;
-
-//Episode: id_episode, episode_name, season_number, episode_number, watched_status, id_show

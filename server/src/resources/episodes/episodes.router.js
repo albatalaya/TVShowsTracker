@@ -4,13 +4,10 @@ const EpisodesControllers = require("./episodes.controller");
 
 const router = Router();
 
-router
-  .route("/")
-  .get(EpisodesControllers.findMany)
-  .post(EpisodesControllers.createOne);
+router.route("/:id/episodes").post(EpisodesControllers.createOne);
 
 router
-  .route("/:id")
+  .route("/:id_show/episodes/:id")
   .get(EpisodesControllers.findOne)
   .delete(EpisodesControllers.deleteOne)
   .put(EpisodesControllers.updateOne);

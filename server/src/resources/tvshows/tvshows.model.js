@@ -8,6 +8,12 @@ const TVShowSchema = new Schema(
       required: true,
       unique: true,
     },
+    episodes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Episode",
+      },
+    ],
   },
   { timestamps: true }
 );

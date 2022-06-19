@@ -14,4 +14,6 @@ router
   .get(TVShowsControllers.findOne)
   .delete(TVShowsControllers.deleteOne);
 
+router.route("/:id/episodes").get(TVShowsControllers.findEpisodes);
+
 module.exports = router;

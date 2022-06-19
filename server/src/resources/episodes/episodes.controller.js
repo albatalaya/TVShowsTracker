@@ -1,80 +1,99 @@
 const Episode = require("./episodes.model");
-
-const findMany = async (req, res) => {
-  try {
-    const docs = await Episode.find().lean().exec();
-    res.status(200).json({ results: docs });
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({ error: "Could not get all the Episodes" });
-  }
-};
+const TVShow = require("../tvshows/tvshows.model");
 
 const createOne = async (req, res) => {
   try {
+    const { id } = req.params;
     const newEpisode = req.body;
-    const doc = await Episode.create(newEpisode);
-    res.status(200).json({ results: [doc] });
+    const episode = await Episode.create(newEpisode);
+    const show = await TVShow.findOneAndUpdate(
+      { _id: id },
+      { $push: { episodes: episode._id } },
+      { new: true }
+    );
+    if (!show) {
+      res.status(404).json({ error: "TV Show does not exist" });
+      console.error("TV Show does not exist");
+      return;
+    }
+    res.status(200).json({ results: [episode] });
   } catch (e) {
-    console.log(e);
-    res.status(500).json({ error: "Could not create the Episode" });
+    const [code, message] =
+      e && e.code === 11000
+        ? [400, "Episode already exists"]
+        : [500, "Could not create the Episode"];
+    res.status(code).json({ error: message });
+    console.error(message);
   }
 };
 
 const findOne = async (req, res) => {
-  const { id } = req.params;
   try {
-    const doc = await Episode.findOne({ _id: id });
-    if (!doc) {
-      return res.status(404).json({ error: "Episode not found" });
+    const { id } = req.params;
+    const episode = await Episode.findOne({ _id: id });
+    if (!episode) {
+      return notExistError(res);
     }
-    res.status(200).json({ results: [doc] });
+    res.status(200).json({ results: [episode] });
   } catch (e) {
-    console.log(e);
-    res.status(500).json({ error: "Could not get the Episode" });
+    couldNotError(res, "get");
   }
 };
 
 const deleteOne = async (req, res) => {
-  const { id } = req.params;
   try {
-    const doc = await Episode.findOneAndDelete({ _id: id }, { new: true });
-    if (!doc) {
-      return res.status(404).json({ error: "Episode not found" });
+    const { id_show, id } = req.params;
+    const show = await TVShow.findOneAndUpdate(
+      { _id: id_show },
+      { $pull: { episodes: id } },
+      { new: true }
+    );
+    const episode = await Episode.findOneAndDelete({ _id: id }, { new: true });
+    if (!episode) {
+      return notExistError(res);
     }
-    res.status(200).json({ results: [doc] });
+    if (!show) {
+      res.status(404).json({ error: "TV Show does not exist" });
+      console.error("TV Show does not exist");
+    }
+    res.status(200).json({ results: [show] });
   } catch (e) {
-    console.log(e);
-    res.status(500).json({ error: "Could not delete the Episode" });
+    couldNotError(res, "delete");
   }
 };
 
 const updateOne = async (req, res) => {
   try {
     const { id } = req.params;
-    const doc = await Episode.findOneAndUpdate(
+    const episode = await Episode.findOneAndUpdate(
       { _id: id },
       { $set: req.body },
       {
         new: true,
       }
     );
-    res.status(200).json({ results: [doc] });
+    if (!episode) {
+      return notExistError(res);
+    }
+    res.status(200).json({ results: [episode] });
   } catch (e) {
-    console.log(e);
-    res.status(500).json({ error: "Could not delete the Episode" });
+    couldNotError(res, "update");
   }
 };
 
 module.exports = {
   createOne,
-  findMany,
   findOne,
   deleteOne,
   updateOne,
 };
 
-//doing manage all possible errors
+function notExistError(res) {
+  res.status(404).json({ error: "Episode does not exist" });
+  console.error("Episode does not exist");
+}
 
-//temp GET all episodes
-//doing PUT update an episode watched_status (id_show id_episode)
+function couldNotError(res, action) {
+  res.status(500).json({ error: `Could not ${action} the Episode` });
+  console.error(`Could not ${action} the Episode`);
+}
